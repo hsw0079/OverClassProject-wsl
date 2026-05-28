@@ -3,7 +3,7 @@
 from django.contrib import admin
 from django.http import HttpResponse
 
-from apps.vehicle_mgmt.models import SchoolVehicle, ExternalVehicle, EntryExitRecord, VisitorAppointment
+from apps.vehicle_mgmt.models import SchoolVehicle, ExternalVehicle, EntryExitRecord, VisitorAppointment, NonMotorVehicle
 
 
 # ---- CSV 导出通用 Action ----
@@ -161,3 +161,21 @@ class VisitorAppointmentAdmin(admin.ModelAdmin):
         return status_colors.get(obj.status, obj.status)
     status_display.short_description = '状态'
     status_display.admin_order_field = 'status'
+
+
+
+# ---- 非机动车档案 Admin ----
+@admin.register(NonMotorVehicle)
+class NonMotorVehicleAdmin(admin.ModelAdmin):
+    list_display = ('number_plate', 'vehicle_type', 'owner_name', 'owner_phone', 'created_at')
+    list_filter = ('vehicle_type', 'created_at')
+    search_fields = ('number_plate', 'owner_name', 'owner_phone')
+    list_per_page = 20
+    ordering = ('number_plate',)
+    actions = [export_as_csv]
+
+    fieldsets = (
+        ('基本信息', {'fields': ('number_plate', 'vehicle_type', 'brand', 'color')}),
+        ('所属信息', {'fields': ('owner_name', 'owner_phone')}),
+        ('其他', {'fields': ('remarks',)}),
+    )

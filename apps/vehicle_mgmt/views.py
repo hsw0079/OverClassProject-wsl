@@ -2,7 +2,7 @@
 from django.shortcuts import render
 from django.utils.timezone import now
 
-from apps.vehicle_mgmt.models import SchoolVehicle, ExternalVehicle, EntryExitRecord, VisitorAppointment
+from apps.vehicle_mgmt.models import SchoolVehicle, ExternalVehicle, EntryExitRecord, VisitorAppointment, NonMotorVehicle
 
 
 @staff_member_required
@@ -44,6 +44,7 @@ def stats_dashboard(request):
         'recent_records': recent_records,
         'total_vehicles': SchoolVehicle.objects.count(),
         'external_vehicles': ExternalVehicle.objects.count(),
+        'non_motor_count': NonMotorVehicle.objects.count(),
         'total_records_today': today_entry_count + today_exit_count,
     }
     return render(request, 'admin/stats_dashboard.html', context)

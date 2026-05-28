@@ -1,6 +1,7 @@
 ﻿from django.test import TestCase, Client
 from django.contrib.auth.models import User
-from apps.vehicle_mgmt.models import SchoolVehicle, ExternalVehicle, EntryExitRecord, VisitorAppointment
+from apps.vehicle_mgmt.models import SchoolVehicle, ExternalVehicle, EntryExitRecord, VisitorAppointment, NonMotorVehicle
+from django.core.exceptions import ValidationError
 from django.utils.timezone import now, timedelta
 
 
@@ -124,3 +125,78 @@ class PurgeCommandTests(TestCase):
         from django.core.management import call_command
         call_command('purge_external_vehicles')
         self.assertEqual(ExternalVehicle.objects.count(), 0)
+
+
+
+class NonMotorVehicleTests(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        User.objects.create_superuser('nmvuser', 'n@t.com', 'p')
+
+    def setUp(self):
+        self.client = Client()
+        self.client.login(username='nmvuser', password='p')
+    """测试非机动车档案"""
+
+    def test_create_valid_plate(self):
+        """合法编号牌创建成功"""
+        for plate in ['001', '050', '500', '999']:
+            nv = NonMotorVehicle(number_plate=plate, vehicle_type='ebike', owner_name='测试')
+            nv.full_clean()
+            nv.save()
+            self.assertEqual(NonMotorVehicle.objects.filter(number_plate=plate).count(), 1)
+
+    def test_invalid_plate_too_short(self):
+        """非法编号牌：位数不足"""
+        nv = NonMotorVehicle(number_plate='05', vehicle_type='ebike', owner_name='测试')
+        with self.assertRaises(ValidationError):
+            nv.full_clean()
+
+    def test_invalid_plate_too_long(self):
+        """非法编号牌：超范围"""
+        nv = NonMotorVehicle(number_plate='1000', vehicle_type='ebike', owner_name='测试')
+        with self.assertRaises(ValidationError):
+            nv.full_clean()
+
+    def test_invalid_plate_zero(self):
+        """非法编号牌：000"""
+        nv = NonMotorVehicle(number_plate='000', vehicle_type='ebike', owner_name='测试')
+        with self.assertRaises(ValidationError):
+            nv.full_clean()
+
+    def test_invalid_plate_alpha(self):
+        """非法编号牌：含字母"""
+        nv = NonMotorVehicle(number_plate='abc', vehicle_type='ebike', owner_name='测试')
+        with self.assertRaises(ValidationError):
+            nv.full_clean()
+
+    def test_invalid_plate_single_digit(self):
+        """非法编号牌：单个数字"""
+        nv = NonMotorVehicle(number_plate='5', vehicle_type='ebike', owner_name='测试')
+        with self.assertRaises(ValidationError):
+            nv.full_clean()
+
+    def test_duplicate_plate_rejected(self):
+        """重复编号牌被唯一约束拦截"""
+        NonMotorVehicle.objects.create(number_plate='010', vehicle_type='ebike', owner_name='测试A')
+        with self.assertRaises(Exception):
+            NonMotorVehicle.objects.create(number_plate='010', vehicle_type='bicycle', owner_name='测试B')
+
+    def test_admin_list_accessible(self):
+        """Admin 列表页正常访问"""
+        r = self.client.get('/admin/vehicle_mgmt/nonmotorvehicle/')
+        self.assertEqual(r.status_code, 200)
+
+    def test_stats_dashboard_shows_count(self):
+        """统计看板显示非机动车数量"""
+        NonMotorVehicle.objects.create(number_plate='001', vehicle_type='ebike', owner_name='测试')
+        r = self.client.get('/admin/stats/')
+        self.assertEqual(r.status_code, 200)
+        self.assertContains(r, '非机动车')
+        self.assertContains(r, '1')
+
+    def test_model_str(self):
+        """__str__ 方法正常"""
+        nv = NonMotorVehicle.objects.create(number_plate='088', vehicle_type='ebike', owner_name='测试人')
+        self.assertIn('088', str(nv))
+        self.assertIn('测试人', str(nv))

@@ -1,4 +1,6 @@
-﻿from django.db import models
+﻿import re
+from django.core.exceptions import ValidationError
+from django.db import models
 from django.utils import timezone
 
 
@@ -149,3 +151,36 @@ class VisitorAppointment(models.Model):
 
     def __str__(self):
         return f'{self.visitor_name} - {self.plate_number}（{self.get_status_display()}）'
+
+
+class NonMotorVehicle(models.Model):
+    """非机动车档案"""
+    TYPE_CHOICES = [
+        ('bicycle', '自行车'),
+        ('ebike', '电动车'),
+        ('tricycle', '三轮车'),
+        ('other', '其他'),
+    ]
+
+    number_plate = models.CharField('编号牌', max_length=3, unique=True, help_text='范围 001~999，必须3位数字')
+    vehicle_type = models.CharField('车辆类型', max_length=20, choices=TYPE_CHOICES, default='ebike')
+    owner_name = models.CharField('所属人', max_length=100)
+    owner_phone = models.CharField('联系电话', max_length=20, blank=True, null=True)
+    brand = models.CharField('品牌', max_length=50, blank=True, null=True)
+    color = models.CharField('颜色', max_length=20, blank=True, null=True)
+    remarks = models.TextField('备注', blank=True, null=True)
+    created_at = models.DateTimeField('创建时间', auto_now_add=True)
+    updated_at = models.DateTimeField('更新时间', auto_now=True)
+
+    class Meta:
+        verbose_name = '非机动车档案'
+        verbose_name_plural = verbose_name
+        ordering = ['number_plate']
+
+    def __str__(self):
+        return f'{self.number_plate}（{self.owner_name}）'
+
+    def clean(self):
+        super().clean()
+        if not re.match(r'^(00[1-9]|0[1-9][0-9]|[1-9][0-9]{2})$', self.number_plate):
+            raise ValidationError({'number_plate': '编号牌必须为 001~999 的3位数字（如 001、050、999）'})
