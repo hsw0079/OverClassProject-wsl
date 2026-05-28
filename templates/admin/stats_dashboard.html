@@ -1,0 +1,145 @@
+﻿{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block title %}系统概览 - 车辆进出管理{% endblock %}
+
+{% block content %}
+<style>
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .stat-card {
+    background: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    text-align: center;
+    transition: transform 0.2s;
+  }
+  .stat-card:hover { transform: translateY(-2px); }
+  .stat-card .stat-number {
+    font-size: 32px;
+    font-weight: 700;
+    color: #409eff;
+    margin-bottom: 4px;
+  }
+  .stat-card .stat-label { font-size: 14px; color: #909399; }
+  .stat-card.entry .stat-number { color: #67c23a; }
+  .stat-card.exit .stat-number { color: #f56c6c; }
+  .stat-card.warning .stat-number { color: #e6a23c; }
+  .stat-card.danger .stat-number { color: #f56c6c; }
+  .stat-card.info .stat-number { color: #409eff; }
+  .stat-card.purple .stat-number { color: #9b59b6; }
+
+  .recent-section {
+    background: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+  .recent-section h3 {
+    margin: 0 0 16px 0;
+    font-size: 16px;
+    color: #303133;
+    border-bottom: 1px solid #ebeef5;
+    padding-bottom: 12px;
+  }
+  .recent-table { width: 100%%; border-collapse: collapse; font-size: 13px; }
+  .recent-table th {
+    text-align: left;
+    padding: 10px 8px;
+    background: #f5f7fa;
+    color: #909399;
+    font-weight: 500;
+    border-bottom: 2px solid #ebeef5;
+  }
+  .recent-table td {
+    padding: 10px 8px;
+    border-bottom: 1px solid #ebeef5;
+    color: #606266;
+  }
+  .recent-table tr:hover td { background: #f5f7fa; }
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; }
+  .tag-entry { background: #e1f3d8; color: #67c23a; }
+  .tag-exit { background: #fde2e2; color: #f56c6c; }
+  .empty-hint { color: #c0c4cc; text-align: center; padding: 40px; }
+</style>
+
+<h2 style="margin-bottom: 20px;">🚗 车辆进出管理系统 · 数据概览</h2>
+
+<div class="stats-grid">
+  <div class="stat-card entry">
+    <div class="stat-number">{{ today_entry_count }}</div>
+    <div class="stat-label">📥 今日进校</div>
+  </div>
+  <div class="stat-card exit">
+    <div class="stat-number">{{ today_exit_count }}</div>
+    <div class="stat-label">📤 今日出校</div>
+  </div>
+  <div class="stat-card info">
+    <div class="stat-number">{{ on_campus_count }}</div>
+    <div class="stat-label">🏫 当前在校</div>
+  </div>
+  <div class="stat-card info">
+    <div class="stat-number">{{ total_vehicles }}</div>
+    <div class="stat-label">📋 车辆总数</div>
+  </div>
+  <div class="stat-card warning">
+    <div class="stat-number">{{ pending_visitors }}</div>
+    <div class="stat-label">⏳ 待审批访客</div>
+  </div>
+  <div class="stat-card purple">
+    <div class="stat-number">{{ today_arrived }}</div>
+    <div class="stat-label">👤 今日到访</div>
+  </div>
+  <div class="stat-card danger">
+    <div class="stat-number">{{ blacklisted_count }}</div>
+    <div class="stat-label">🚫 黑名单车辆</div>
+  </div>
+  <div class="stat-card info">
+    <div class="stat-number">{{ total_records_today }}</div>
+    <div class="stat-label">📊 今日总记录</div>
+  </div>
+</div>
+
+<div class="recent-section">
+  <h3>📌 最近进出记录</h3>
+  {% if recent_records %}
+  <table class="recent-table">
+    <thead>
+      <tr>
+        <th>时间</th>
+        <th>类型</th>
+        <th>车牌号</th>
+        <th>驾驶员</th>
+        <th>事由</th>
+        <th>审批人</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for record in recent_records %}
+      <tr>
+        <td>{{ record.record_time|date:"Y-m-d H:i" }}</td>
+        <td>
+          {% if record.record_type == 'entry' %}
+          <span class="tag tag-entry">进校</span>
+          {% else %}
+          <span class="tag tag-exit">出校</span>
+          {% endif %}
+        </td>
+        <td>{{ record.vehicle.plate_number }}</td>
+        <td>{{ record.driver_name }}</td>
+        <td>{{ record.purpose|default:"-"|truncatechars:20 }}</td>
+        <td>{{ record.approver|default:"-" }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="empty-hint">暂无进出记录</div>
+  {% endif %}
+</div>
+{% endblock %}
