@@ -2,8 +2,8 @@
 from django.utils import timezone
 
 
-class Vehicle(models.Model):
-    """车辆档案"""
+class SchoolVehicle(models.Model):
+    """在校车辆档案"""
     VEHICLE_TYPE_CHOICES = [
         ('school_bus', '校车'),
         ('staff', '教职工车辆'),
@@ -25,7 +25,23 @@ class Vehicle(models.Model):
     updated_at = models.DateTimeField('更新时间', auto_now=True)
 
     class Meta:
-        verbose_name = '车辆档案'
+        verbose_name = '在校车辆档案'
+        verbose_name_plural = verbose_name
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f'{self.plate_number}（{self.owner_name}）'
+
+
+class ExternalVehicle(models.Model):
+    """外来车辆档案（每月月底清空）"""
+    plate_number = models.CharField('车牌号', max_length=20, unique=True)
+    owner_name = models.CharField('所属人', max_length=100)
+    owner_phone = models.CharField('联系电话', max_length=20, blank=True, null=True)
+    created_at = models.DateTimeField('首次登记时间', auto_now_add=True)
+
+    class Meta:
+        verbose_name = '外来车辆档案'
         verbose_name_plural = verbose_name
         ordering = ['-created_at']
 
@@ -40,9 +56,14 @@ class EntryExitRecord(models.Model):
         ('exit', '出校'),
     ]
 
-    vehicle = models.ForeignKey(
-        Vehicle, on_delete=models.CASCADE,
-        verbose_name='车辆', related_name='records'
+    plate_number = models.CharField('车牌号', max_length=20)
+    school_vehicle = models.ForeignKey(
+        SchoolVehicle, on_delete=models.SET_NULL, null=True, blank=True,
+        verbose_name='在校车辆', related_name='records'
+    )
+    external_vehicle = models.ForeignKey(
+        ExternalVehicle, on_delete=models.SET_NULL, null=True, blank=True,
+        verbose_name='外来车辆', related_name='records'
     )
     record_type = models.CharField('进出类型', max_length=10, choices=RECORD_TYPE_CHOICES)
     record_time = models.DateTimeField('进出时间', default=timezone.now)
@@ -67,7 +88,35 @@ class EntryExitRecord(models.Model):
 
     def __str__(self):
         type_label = '进校' if self.record_type == 'entry' else '出校'
-        return f'{self.vehicle.plate_number} {type_label} {self.record_time.strftime("%Y-%m-%d %H:%M")}'
+        return f'{self.plate_number} {type_label} {self.record_time.strftime("%Y-%m-%d %H:%M")}'
+
+    def save(self, *args, **kwargs):
+        # 自动关联：先查在校车辆，未命中则创建/关联外来车辆
+        self.plate_number = (self.plate_number or '').strip()
+        sv = SchoolVehicle.objects.filter(plate_number=self.plate_number).first()
+        if sv:
+            self.school_vehicle = sv
+            self.external_vehicle = None
+        else:
+            self.school_vehicle = None
+            ev, _ = ExternalVehicle.objects.get_or_create(
+                plate_number=self.plate_number,
+                defaults={
+                    'owner_name': self.driver_name,
+                    'owner_phone': self.driver_phone or '',
+                }
+            )
+            self.external_vehicle = ev
+        super().save(*args, **kwargs)
+
+    @property
+    def owner_name(self):
+        """获取所属人名称（在校 > 外来 > 驾驶员）"""
+        if self.school_vehicle:
+            return self.school_vehicle.owner_name
+        if self.external_vehicle:
+            return self.external_vehicle.owner_name
+        return self.driver_name
 
 
 class VisitorAppointment(models.Model):

@@ -85,7 +85,11 @@
   </div>
   <div class="stat-card info">
     <div class="stat-number">{{ total_vehicles }}</div>
-    <div class="stat-label">📋 车辆总数</div>
+    <div class="stat-label">📋 在校车辆</div>
+  </div>
+  <div class="stat-card purple">
+    <div class="stat-number">{{ external_vehicles }}</div>
+    <div class="stat-label">🚗 本月外来</div>
   </div>
   <div class="stat-card warning">
     <div class="stat-number">{{ pending_visitors }}</div>
@@ -99,10 +103,6 @@
     <div class="stat-number">{{ blacklisted_count }}</div>
     <div class="stat-label">🚫 黑名单车辆</div>
   </div>
-  <div class="stat-card info">
-    <div class="stat-number">{{ total_records_today }}</div>
-    <div class="stat-label">📊 今日总记录</div>
-  </div>
 </div>
 
 <div class="recent-section">
@@ -114,9 +114,9 @@
         <th>时间</th>
         <th>类型</th>
         <th>车牌号</th>
+        <th>来源</th>
         <th>驾驶员</th>
         <th>事由</th>
-        <th>审批人</th>
       </tr>
     </thead>
     <tbody>
@@ -130,10 +130,10 @@
           <span class="tag tag-exit">出校</span>
           {% endif %}
         </td>
-        <td>{{ record.vehicle.plate_number }}</td>
+        <td>{{ record.plate_number }}</td>
+        <td>{% if record.school_vehicle %}🏫 在校{% elif record.external_vehicle %}🚗 外来{% else %}—{% endif %}</td>
         <td>{{ record.driver_name }}</td>
         <td>{{ record.purpose|default:"-"|truncatechars:20 }}</td>
-        <td>{{ record.approver|default:"-" }}</td>
       </tr>
       {% endfor %}
     </tbody>

@@ -2,7 +2,7 @@
 from django.shortcuts import render
 from django.utils.timezone import now
 
-from apps.vehicle_mgmt.models import Vehicle, EntryExitRecord, VisitorAppointment
+from apps.vehicle_mgmt.models import SchoolVehicle, ExternalVehicle, EntryExitRecord, VisitorAppointment
 
 
 @staff_member_required
@@ -10,7 +10,6 @@ def stats_dashboard(request):
     """系统首页统计看板"""
     today = now().date()
 
-    # 今日进出统计
     today_entry_count = EntryExitRecord.objects.filter(
         record_type='entry', record_time__date=today
     ).count()
@@ -18,29 +17,22 @@ def stats_dashboard(request):
         record_type='exit', record_time__date=today
     ).count()
 
-    # 当前在校车辆
-    entered_today = EntryExitRecord.objects.filter(
+    # 当前在校车辆（按车牌号去重）
+    entered_today = set(EntryExitRecord.objects.filter(
         record_type='entry', record_time__date=today
-    ).values_list('vehicle_id', flat=True)
-    exited_today = EntryExitRecord.objects.filter(
+    ).values_list('plate_number', flat=True))
+    exited_today = set(EntryExitRecord.objects.filter(
         record_type='exit', record_time__date=today
-    ).values_list('vehicle_id', flat=True)
-    on_campus_ids = set(entered_today) - set(exited_today)
-    on_campus_count = len(on_campus_ids)
+    ).values_list('plate_number', flat=True))
+    on_campus_count = len(entered_today - exited_today)
 
-    # 待审批访客
     pending_visitors = VisitorAppointment.objects.filter(status='pending').count()
-
-    # 黑名单车辆
-    blacklisted_count = Vehicle.objects.filter(is_blacklisted=True).count()
-
-    # 今日到访
+    blacklisted_count = SchoolVehicle.objects.filter(is_blacklisted=True).count()
     today_arrived = VisitorAppointment.objects.filter(
         status__in=['arrived', 'left']
     ).filter(expected_time__date=today).count()
 
-    # 最近10条进出记录
-    recent_records = EntryExitRecord.objects.select_related('vehicle').order_by('-record_time')[:10]
+    recent_records = EntryExitRecord.objects.order_by('-record_time')[:10]
 
     context = {
         'today_entry_count': today_entry_count,
@@ -50,7 +42,8 @@ def stats_dashboard(request):
         'blacklisted_count': blacklisted_count,
         'today_arrived': today_arrived,
         'recent_records': recent_records,
-        'total_vehicles': Vehicle.objects.count(),
+        'total_vehicles': SchoolVehicle.objects.count(),
+        'external_vehicles': ExternalVehicle.objects.count(),
         'total_records_today': today_entry_count + today_exit_count,
     }
     return render(request, 'admin/stats_dashboard.html', context)
