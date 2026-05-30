@@ -40,6 +40,7 @@ purge_external_vehicles_action.short_description = '⚠ 立即清空所有外来
 # ---- 在校车辆档案 Admin ----
 @admin.register(SchoolVehicle)
 class SchoolVehicleAdmin(admin.ModelAdmin):
+    change_list_template = 'admin/school_vehicle_change_list.html'
     list_display = ('plate_number', 'vehicle_type', 'owner_name', 'owner_phone',
                     'is_blacklisted', 'created_at')
     list_filter = ('vehicle_type', 'is_blacklisted', 'created_at')

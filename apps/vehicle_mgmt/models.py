@@ -27,7 +27,7 @@ class SchoolVehicle(models.Model):
     updated_at = models.DateTimeField('更新时间', auto_now=True)
 
     class Meta:
-        verbose_name = '在校车辆档案'
+        verbose_name = '校内车辆档案'
         verbose_name_plural = verbose_name
         ordering = ['-created_at']
 
