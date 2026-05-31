@@ -1,14 +1,17 @@
 ﻿{% extends "admin/change_list.html" %}
+{% load static %}
+
+{% block extrastyle %}
+<link rel="stylesheet" href="{% static 'css/admin_custom.css' %}">
+{% endblock %}
 
 {% block content %}
-<div id="countdown-bar" style="background: linear-gradient(135deg, #ebdc50, #efd34d); color: #fff; padding: 14px 20px; border-radius: 8px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; font-size: 15px;">
+<div class="countdown-bar">
   <div>
-    <strong>⏳ 本月清空倒计时</strong>
+    <strong> 本月清空倒计时</strong>
     <span style="margin-left: 12px; opacity: 0.85;">外来车辆档案将在每月最后一天 23:59:59 自动清空</span>
   </div>
-  <div id="countdown-timer" style="font-size: 22px; font-weight: 700; letter-spacing: 2px; min-width: 180px; text-align: right;">
-    计算中...
-  </div>
+  <div class="countdown-timer" id="countdown-timer">计算中...</div>
 </div>
 
 {{ block.super }}
@@ -17,35 +20,22 @@
 (function() {
   function getMonthEnd() {
     var now = new Date();
-    var year = now.getFullYear();
-    var month = now.getMonth();
-    // 本月最后一天 23:59:59
-    var lastDay = new Date(year, month + 1, 0, 23, 59, 59);
-    return lastDay;
+    return new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59);
   }
-
   function pad(n) { return n < 10 ? '0' + n : n; }
-
   function updateCountdown() {
-    var now = new Date();
-    var end = getMonthEnd();
-    var diff = Math.floor((end - now) / 1000);
-
+    var diff = Math.floor((getMonthEnd() - new Date()) / 1000);
     if (diff <= 0) {
       document.getElementById('countdown-timer').textContent = '已到期，请清空！';
-      document.getElementById('countdown-timer').style.color = '#fff';
       return;
     }
-
     var days = Math.floor(diff / 86400);
     var hours = Math.floor((diff % 86400) / 3600);
     var mins = Math.floor((diff % 3600) / 60);
     var secs = diff % 60;
-
     document.getElementById('countdown-timer').textContent =
       days + '天 ' + pad(hours) + ':' + pad(mins) + ':' + pad(secs);
   }
-
   updateCountdown();
   setInterval(updateCountdown, 1000);
 })();

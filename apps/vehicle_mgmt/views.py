@@ -143,3 +143,55 @@ def download_template(request):
     response['Content-Disposition'] = 'attachment; filename="在校车辆导入模板.xlsx"'
     wb.save(response)
     return response
+
+
+def visitor_appointment(request):
+    """访客自助预约（公开页面，无需登录）"""
+    from django.http import HttpResponseRedirect
+
+    success = False
+    error = None
+
+    if request.method == 'POST':
+        visitor_name = request.POST.get('visitor_name', '').strip()
+        visitor_phone = request.POST.get('visitor_phone', '').strip()
+        plate_number = request.POST.get('plate_number', '').strip()
+        host_name = request.POST.get('host_name', '').strip()
+        host_department = request.POST.get('host_department', '').strip()
+        expected_date = request.POST.get('expected_date', '').strip()
+        expected_time = request.POST.get('expected_time', '').strip()
+        purpose = request.POST.get('purpose', '').strip()
+
+        # 校验必填项
+        if not all([visitor_name, visitor_phone, plate_number, host_name, expected_date, purpose]):
+            error = '请填写所有必填项（访客姓名、电话、车牌号、被访人、预计进校日期、事由）'
+        elif not visitor_phone.isdigit() or len(visitor_phone) < 7:
+            error = '请输入正确的联系电话'
+        else:
+            try:
+                from datetime import datetime
+                dt_str = f'{expected_date} {expected_time or "08:00"}:00'
+                expected_dt = datetime.strptime(dt_str, '%Y-%m-%d %H:%M:%S')
+                from django.utils.timezone import make_aware
+                expected_dt = make_aware(expected_dt)
+
+                VisitorAppointment.objects.create(
+                    visitor_name=visitor_name,
+                    visitor_phone=visitor_phone,
+                    plate_number=plate_number,
+                    host_name=host_name,
+                    host_department=host_department or None,
+                    expected_time=expected_dt,
+                    purpose=purpose,
+                    status='pending',
+                )
+                success = True
+            except ValueError:
+                error = '日期或时间格式不正确'
+            except Exception as e:
+                error = f'提交失败，请稍后重试：{e}'
+
+    return render(request, 'visitor_appointment.html', {
+        'success': success,
+        'error': error,
+    })

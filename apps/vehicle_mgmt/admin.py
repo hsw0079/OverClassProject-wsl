@@ -112,11 +112,12 @@ class EntryExitRecordAdmin(admin.ModelAdmin):
         ('其他', {'fields': ('remarks',)}),
     )
 
+    # 图标
     def vehicle_source(self, obj):
         if obj.school_vehicle:
-            return f'🏫 {obj.school_vehicle.owner_name}'
+            return f' {obj.school_vehicle.owner_name}'
         if obj.external_vehicle:
-            return f'🚗 外来'
+            return f' 外来'
         return '—'
     vehicle_source.short_description = '车辆来源'
 

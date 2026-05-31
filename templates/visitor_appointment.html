@@ -1,0 +1,205 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>访客预约登记</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: linear-gradient(135deg, #eab166 0%%, #764ba2 100%%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .container {
+    background: #fff;
+    border-radius: 16px;
+    padding: 32px 28px;
+    width: 100%%;
+    max-width: 460px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  }
+  .header {
+    text-align: center;
+    margin-bottom: 28px;
+  }
+  .header h1 {
+    font-size: 22px;
+    color: #303133;
+    margin-bottom: 4px;
+  }
+  .header p {
+    font-size: 13px;
+    color: #909399;
+  }
+  .form-group {
+    margin-bottom: 16px;
+  }
+  .form-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #606266;
+    margin-bottom: 4px;
+  }
+  .form-group label .required {
+    color: #f56c6c;
+    margin-left: 2px;
+  }
+  .form-group input, .form-group textarea {
+    width: 100%%;
+    padding: 10px 12px;
+    border: 1px solid #dcdfe6;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #303133;
+    transition: border-color 0.2s;
+    outline: none;
+  }
+  .form-group input:focus, .form-group textarea:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
+  }
+  .form-row {
+    display: flex;
+    gap: 12px;
+  }
+  .form-row .form-group { flex: 1; }
+  .btn {
+    width: 100%%;
+    padding: 12px;
+    background: linear-gradient(135deg, #56daeb, #56daeb);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    margin-top: 8px;
+  }
+  .btn:hover { opacity: 0.9; }
+  .error-msg {
+    background: #fef0f0;
+    color: #f56c6c;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    margin-bottom: 16px;
+    border: 1px solid #fde2e2;
+  }
+  .success-box {
+    text-align: center;
+    padding: 40px 0;
+  }
+  .success-box .icon {
+    font-size: 56px;
+    margin-bottom: 16px;
+  }
+  .success-box h2 {
+    font-size: 20px;
+    color: #67c23a;
+    margin-bottom: 8px;
+  }
+  .success-box .detail {
+    font-size: 13px;
+    color: #909399;
+    line-height: 1.8;
+  }
+  .success-box .btn-outline {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 32px;
+    border: 1px solid #667eea;
+    color: #667eea;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 14px;
+  }
+  .footer-note {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 12px;
+    color: #c0c4cc;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  {% if success %}
+  <!-- 提交成功 -->
+  <div class="success-box">
+    <div class="icon">✅</div>
+    <h2>预约提交成功</h2>
+    <div class="detail">
+      您的访客预约已提交，请等待管理员审批。<br>
+      审批通过后方可进校。
+    </div>
+    <a href="." class="btn-outline">继续预约</a>
+  </div>
+
+  {% else %}
+  <!-- 预约表单 -->
+  <div class="header">
+    <h1>访客进校预约</h1>
+    <p>填写以下信息提交预约申请</p>
+  </div>
+
+  {% if error %}
+  <div class="error-msg">{{ error }}</div>
+  {% endif %}
+
+  <form method="post">
+    {% csrf_token %}
+    <div class="form-group">
+      <label>访客姓名 <span class="required">*</span></label>
+      <input type="text" name="visitor_name" maxlength="50" placeholder="请输入您的姓名" required>
+    </div>
+    <div class="form-group">
+      <label>联系电话 <span class="required">*</span></label>
+      <input type="text" name="visitor_phone" maxlength="20" placeholder="请输入手机号码" required>
+    </div>
+    <div class="form-group">
+      <label>车牌号 <span class="required">*</span></label>
+      <input type="text" name="plate_number" maxlength="20" placeholder="请输入车牌号" required>
+    </div>
+    <div class="form-group">
+      <label>被访人 <span class="required">*</span></label>
+      <input type="text" name="host_name" maxlength="50" placeholder="请输入被访人姓名" required>
+    </div>
+    <div class="form-group">
+      <label>被访部门</label>
+      <input type="text" name="host_department" maxlength="100" placeholder="如：教务处、信息中心（选填）">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>预计进校日期 <span class="required">*</span></label>
+        <input type="date" name="expected_date" required>
+      </div>
+      <div class="form-group">
+        <label>预计时间</label>
+        <input type="time" name="expected_time" value="08:00">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>进校事由 <span class="required">*</span></label>
+      <textarea name="purpose" rows="2" maxlength="500" placeholder="请简要说明进校事由" required></textarea>
+    </div>
+    <button type="submit" class="btn">提交预约</button>
+  </form>
+
+  <div class="footer-note">
+    提交后请等待管理员审批，审批通过后方可进校
+  </div>
+  {% endif %}
+
+</div>
+
+</body>
+</html>

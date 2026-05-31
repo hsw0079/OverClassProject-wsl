@@ -42,7 +42,8 @@ SIMPLEUI_DEFAULT_THEME = 'Simpleui-x.css'
 SIMPLEUI_HOME_INFO = False
 SIMPLEUI_HOME_PAGE = '/admin/stats/'
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# In dev, use simpler storage or run collectstatic first
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
 ROOT_URLCONF = 'OverClassProject.urls'
 
@@ -91,6 +92,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
