@@ -1,9 +1,8 @@
-{% extends "admin/base_site.html" %}
+﻿{% extends "admin/base_site.html" %}
 {% load static %}
 
 {% block extrastyle %}
 {{ block.super }}
-<link rel="stylesheet" href="{% static 'css/admin_tesla.css' %}">
 <style>
   .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
   @media (max-width: 768px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }

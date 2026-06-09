@@ -1,0 +1,37 @@
+回滚到上上版、覆盖本地当前代码
+git reset --hard HEAD^^
+
+git status
+
+可以精确回到任意一个历史版本的方法，只改本地，不会影响 Gitee / GitHub
+
+找到你要回到的版本号（commit id）
+
+commit a1b2c3d4e5f6...  (这就是版本号)
+Author: xxx
+Date:   xxx
+    提交说明：完成登录功能
+
+commit 1a2b3c4d5e6f...
+
+复制你想回到的那个版本号前 6-7 位即可，例如：a1b2c3d，bb064b6693ef7873e93a1dce06aa7248fdea97ce
+
+git reset --hard 你的版本号
+git checkout
+
+1. 彻底回滚（覆盖本地文件，最常用）
+bash
+运行
+git reset --hard 版本号
+本地文件 直接变回那个版本
+丢弃当前所有未提交的修改
+最干净、最彻底
+
+
+2. 温和回滚（不删代码，只撤销提交）
+bash
+运行
+git reset 版本号
+代码文件保持不变
+只是把提交记录退回去
+适合不想丢代码的情况
