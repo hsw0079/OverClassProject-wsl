@@ -33,7 +33,7 @@ function openCampusMap() {
   var locateBtn = document.createElement('div');
   locateBtn.title = '定位到当前位置';
   locateBtn.style.cssText = 'position:absolute;bottom:20px;right:20px;width:40px;height:40px;background:#fff;border:1px solid #E5E7EB;border-radius:4px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:10;font-size:18px;';
-  locateBtn.innerHTML = '📍';
+  locateBtn.innerHTML = '🚩';
   mapDiv.appendChild(locateBtn);
 
   // 底部栏
