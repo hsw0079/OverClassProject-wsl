@@ -41,7 +41,7 @@
       >
         ▶ 开始导航
       </button>
-      <button v-else class="btn-nav btn-nav-stop" @click="stopNavigation">
+      <button v-else class="btn-primary" style="height:36px;padding:0 24px;font-size:14px;background:#DC2626" @click="stopNavigation">
         ⏹ 结束导航
       </button>
     </div>
@@ -410,7 +410,7 @@ function stepIcon(instruction) {
   font-size: 12px;
   color: #e6a23c;
   z-index: 10;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  border: 1px solid var(--border);
 }
 
 /* ---- 步骤面板 ---- */
@@ -421,10 +421,10 @@ function stepIcon(instruction) {
   right: 8px;
   max-height: 30vh;
   overflow-y: auto;
-  background: rgba(255,255,255,0.94);
-  border-radius: 12px;
+  background: rgba(255,255,255,0.96);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
   padding: 8px 0;
-  box-shadow: 0 -2px 12px rgba(0,0,0,0.1);
   z-index: 5;
 }
 .step-item {
@@ -462,8 +462,8 @@ function stepIcon(instruction) {
   left: 0;
   right: 0;
   padding: 12px 20px;
-  background: #fff;
-  box-shadow: 0 -2px 8px rgba(0,0,0,0.08);
+  background: var(--white);
+  border-top: 1px solid var(--border);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -477,25 +477,7 @@ function stepIcon(instruction) {
   font-size: 12px;
   color: #909399;
 }
-.btn-nav {
-  padding: 10px 28px;
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: opacity 0.2s;
-}
-.btn-nav:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-.btn-nav-stop {
-  background: #f56c6c;
-}
+
 
 /* ---- 校园地图弹窗 ---- */
 .map-overlay {
@@ -511,19 +493,20 @@ function stepIcon(instruction) {
   justify-content: center;
 }
 .map-modal {
-  background: #fff;
-  border-radius: 12px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
   padding: 16px;
   width: 90%;
-  max-width: 50vw;
-  max-height: 50vh;
+  max-width: 92vw;
+  max-height: 90vh;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 .campus-img {
   width: 100%;
-  max-height: 45vh;
+  max-height: 82vh;
   object-fit: contain;
   border-radius: 8px;
 }

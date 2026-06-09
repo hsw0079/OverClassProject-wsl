@@ -1,4 +1,4 @@
-﻿{% extends "admin/change_list.html" %}
+{% extends "admin/change_list.html" %}
 {% load static %}
 
 {% block extrahead %}
@@ -12,6 +12,6 @@
 {% endblock %}
 
 {% block object-tools-items %}
-  <li><a href="#" onclick="openCampusMap(); return false;" style="background:#409eff;color:#fff;padding:7px 16px;border-radius:4px;">📍 添加校内地点</a></li>
+  <li><a href="#" onclick="openCampusMap(); return false;" style="background:#3E6AE1;color:#fff;padding:7px 16px;border-radius:4px;font-weight:500;font-size:13px;text-decoration:none">添加校内地点</a></li>
   {{ block.super }}
 {% endblock %}

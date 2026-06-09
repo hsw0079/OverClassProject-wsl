@@ -1,99 +1,76 @@
-﻿{% extends "admin/base_site.html" %}
+{% extends "admin/base_site.html" %}
 {% load static %}
 
 {% block extrastyle %}
-<link rel="stylesheet" href="{% static 'css/admin_custom.css' %}">
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'css/admin_tesla.css' %}">
+<style>
+  .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
+  @media (max-width: 768px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+  .stat-card {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 20px; text-align: center;
+  }
+  .stat-number { font-size: 28px; font-weight: 600; color: var(--carbon); line-height: 1.2; }
+  .stat-label { font-size: 12px; color: var(--pewter); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 24px; }
+  .card-header { padding: 12px 16px; font-size: 13px; font-weight: 600; color: var(--carbon); border-bottom: 1px solid var(--border); background: var(--ash); }
+  .recent-table { width: 100%; border-collapse: collapse; }
+  .recent-table th { padding: 8px 12px; font-size: 11px; font-weight: 600; color: var(--pewter); text-transform: uppercase; text-align: left; border-bottom: 1px solid var(--border); }
+  .recent-table td { padding: 8px 12px; font-size: 13px; color: var(--graphite); border-bottom: 1px solid var(--ash); }
+  .recent-table tr:last-child td { border-bottom: none; }
+  .tag { display: inline-block; padding: 1px 8px; border-radius: var(--radius); font-size: 11px; font-weight: 600; }
+  .tag-entry { background: #E8F5E9; color: #2E7D32; }
+  .tag-exit { background: #F5F5F5; color: #616161; }
+  .empty-hint { padding: 24px; text-align: center; color: var(--silver); font-size: 13px; }
+  .appt-banner { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); }
+  .appt-banner strong { font-size: 14px; color: var(--carbon); display: block; }
+  .text-hint { font-size: 12px; color: var(--pewter); }
+  .btn-outline { display: inline-block; padding: 6px 14px; color: var(--blue); border: 1px solid var(--blue); border-radius: var(--radius); font-size: 13px; text-decoration: none; transition: var(--transition); }
+  .btn-outline:hover { background: var(--blue); color: #fff; }
+</style>
 {% endblock %}
 
-{% block title %}系统概览 - 车辆进出管理{% endblock %}
+{% block title %}系统概览 - 校园车辆进出管理{% endblock %}
 
 {% block content %}
-
-<h2 class="page-title" style="margin-left: 20px"> 车辆进出管理系统 </h2>
+<h1 style="font-size:20px;font-weight:600;color:var(--carbon);margin-bottom:20px">系统概览</h1>
 
 <div class="stats-grid">
-  <div class="stat-card entry">
-    <div class="stat-number">{{ today_entry_count }}</div>
-    <div class="stat-label"> 今日进校</div>
-  </div>
-  <div class="stat-card exit">
-    <div class="stat-number">{{ today_exit_count }}</div>
-    <div class="stat-label"> 今日出校</div>
-  </div>
-  <div class="stat-card info">
-    <div class="stat-number">{{ on_campus_count }}</div>
-    <div class="stat-label"> 当前在校</div>
-  </div>
-  <div class="stat-card info">
-    <div class="stat-number">{{ total_vehicles }}</div>
-    <div class="stat-label"> 在校车辆</div>
-  </div>
-  <div class="stat-card info">
-    <div class="stat-number">{{ non_motor_count }}</div>
-    <div class="stat-label"> 非机动车</div>
-  </div>
-  <div class="stat-card purple">
-    <div class="stat-number">{{ external_vehicles }}</div>
-    <div class="stat-label"> 本月外来</div>
-  </div>
-  <div class="stat-card warning">
-    <div class="stat-number">{{ pending_visitors }}</div>
-    <div class="stat-label"> 待审批访客</div>
-  </div>
-  <div class="stat-card purple">
-    <div class="stat-number">{{ today_arrived }}</div>
-    <div class="stat-label"> 今日到访</div>
-  </div>
-  <div class="stat-card danger">
-    <div class="stat-number">{{ blacklisted_count }}</div>
-    <div class="stat-label"> 黑名单车辆</div>
-  </div>
+  <div class="stat-card"><div class="stat-number">{{ today_entry_count }}</div><div class="stat-label">今日进校</div></div>
+  <div class="stat-card"><div class="stat-number">{{ today_exit_count }}</div><div class="stat-label">今日出校</div></div>
+  <div class="stat-card"><div class="stat-number">{{ on_campus_count }}</div><div class="stat-label">当前在校</div></div>
+  <div class="stat-card"><div class="stat-number">{{ total_vehicles }}</div><div class="stat-label">在校车辆</div></div>
+  <div class="stat-card"><div class="stat-number">{{ non_motor_count }}</div><div class="stat-label">非机动车</div></div>
+  <div class="stat-card"><div class="stat-number">{{ external_vehicles }}</div><div class="stat-label">本月外来</div></div>
+  <div class="stat-card"><div class="stat-number">{{ pending_visitors }}</div><div class="stat-label">待审批访客</div></div>
+  <div class="stat-card"><div class="stat-number">{{ today_arrived }}</div><div class="stat-label">今日到访</div></div>
+  <div class="stat-card"><div class="stat-number">{{ blacklisted_count }}</div><div class="stat-label">黑名单车辆</div></div>
 </div>
 
 <div class="card">
-  <h3 class="card-header"> 最近进出记录</h3>
+  <div class="card-header">最近进出记录</div>
   {% if recent_records %}
   <table class="recent-table">
-    <thead>
-      <tr>
-        <th>时间</th>
-        <th>类型</th>
-        <th>车牌号</th>
-        <th>来源</th>
-        <th>驾驶员</th>
-        <th>事由</th>
-      </tr>
-    </thead>
+    <thead><tr><th>时间</th><th>类型</th><th>车牌号</th><th>来源</th><th>驾驶员</th><th>事由</th></tr></thead>
     <tbody>
       {% for record in recent_records %}
       <tr>
         <td>{{ record.record_time|date:"Y-m-d H:i" }}</td>
-        <td>
-          {% if record.record_type == 'entry' %}
-          <span class="tag tag-entry">进校</span>
-          {% else %}
-          <span class="tag tag-exit">出校</span>
-          {% endif %}
-        </td>
+        <td>{% if record.record_type == 'entry' %}<span class="tag tag-entry">进校</span>{% else %}<span class="tag tag-exit">出校</span>{% endif %}</td>
         <td>{{ record.plate_number }}</td>
-        <td>{% if record.school_vehicle %} 在校{% elif record.external_vehicle %} 外来{% else %}—{% endif %}</td>
+        <td>{% if record.school_vehicle %}在校{% elif record.external_vehicle %}外来{% else %}—{% endif %}</td>
         <td>{{ record.driver_name }}</td>
         <td>{{ record.purpose|default:"-"|truncatechars:20 }}</td>
       </tr>
       {% endfor %}
     </tbody>
   </table>
-  {% else %}
-  <div class="empty-hint">暂无进出记录</div>
-  {% endif %}
+  {% else %}<div class="empty-hint">暂无进出记录</div>{% endif %}
 </div>
 
 <div class="appt-banner">
-  <div>
-    <strong> 访客自助预约</strong>
-    <span class="text-hint">访客可自行扫码或访问链接提交预约，无需登录</span>
-  </div>
-  <a href="/appointment/" target="_blank" class="btn-success">打开预约页 →</a>
+  <div><strong>访客自助预约</strong><span class="text-hint"> 访客可自行扫码或访问链接提交预约</span></div>
+  <a href="/appointment/" target="_blank" class="btn-outline">打开预约页 →</a>
 </div>
-
 {% endblock %}

@@ -1,25 +1,34 @@
 <template>
   <div class="auth-page">
     <div class="auth-card">
-      <h1>注册账号</h1>
-      <p class="subtitle">创建您的访客账号</p>
+      <h1 class="auth-title">创建账号</h1>
+      <p class="auth-sub">注册访客账号</p>
+
       <form @submit.prevent="handleRegister">
-        <div class="form-group">
+        <div class="field">
           <label>用户名</label>
-          <input v-model="username" type="text" placeholder="请输入用户名" required />
+          <input v-model="username" type="text" class="input-line" placeholder="请输入用户名" autocomplete="username" required />
         </div>
-        <div class="form-group">
+        <div class="field">
           <label>密码</label>
-          <input v-model="password" type="password" placeholder="至少6位" required minlength="6" />
+          <input v-model="password" type="password" class="input-line" placeholder="至少 6 位" required minlength="6" />
         </div>
-        <div class="form-group">
+        <div class="field">
           <label>确认密码</label>
-          <input v-model="password2" type="password" placeholder="请再次输入密码" required />
+          <input v-model="password2" type="password" class="input-line" placeholder="请再次输入密码" required />
         </div>
-        <p v-if="error" class="error">{{ error }}</p>
-        <button type="submit" :disabled="loading">{{ loading ? '注册中...' : '注册' }}</button>
+
+        <div v-if="error" class="error-msg">{{ error }}</div>
+
+        <button type="submit" :disabled="loading" class="btn-primary" style="width:100%;margin-top:24px">
+          <span v-if="loading" class="spinner"></span>
+          {{ loading ? '注册中...' : '注 册' }}
+        </button>
       </form>
-      <p class="switch-link">已有账号？<router-link to="/login">去登录</router-link></p>
+
+      <p class="switch-link">
+        已有账号？<router-link to="/login">去登录</router-link>
+      </p>
     </div>
   </div>
 </template>
@@ -38,19 +47,15 @@ const error = ref('')
 const loading = ref(false)
 
 async function handleRegister() {
-  console.log('[Register] button clicked')
   error.value = ''
-  if (password.value !== password2.value) {
-    error.value = '两次密码不一致'
-    return
-  }
+  if (password.value !== password2.value) { error.value = '两次密码不一致'; return }
   loading.value = true
   try {
-    console.log('[Register] username:', username.value); await auth.register(username.value, password.value)
-    console.log('[Register] success, redirecting'); router.push('/')
+    await auth.register(username.value, password.value)
+    router.push('/')
   } catch (e) {
-    const data = e.response?.data
-    error.value = typeof data === 'string' ? data : (data?.username?.[0] || data?.password?.[0] || '注册失败')
+    const d = e.response?.data
+    error.value = typeof d === 'string' ? d : (d?.username?.[0] || d?.password?.[0] || '注册失败')
   } finally {
     loading.value = false
   }
@@ -58,17 +63,22 @@ async function handleRegister() {
 </script>
 
 <style scoped>
-.auth-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; }
-.auth-card { background: #fff; border-radius: 16px; padding: 36px 28px; width: 100%; max-width: 400px; box-shadow: 0 20px 60px rgba(0,0,0,0.15); }
-h1 { text-align: center; font-size: 20px; color: #303133; margin-bottom: 4px; }
-.subtitle { text-align: center; font-size: 13px; color: #909399; margin-bottom: 24px; }
-.form-group { margin-bottom: 16px; }
-.form-group label { display: block; font-size: 13px; font-weight: 600; color: #606266; margin-bottom: 4px; }
-.form-group input { width: 100%; padding: 10px 12px; border: 1px solid #dcdfe6; border-radius: 8px; font-size: 14px; outline: none; }
-.form-group input:focus { border-color: #667eea; }
-button { width: 100%; padding: 12px; background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 8px; }
-button:disabled { opacity: 0.6; cursor: not-allowed; }
-.error { background: #fef0f0; color: #f56c6c; padding: 8px 12px; border-radius: 6px; font-size: 13px; margin-bottom: 8px; }
-.switch-link { text-align: center; margin-top: 16px; font-size: 13px; color: #909399; }
-.switch-link a { color: #667eea; text-decoration: none; }
+.auth-page {
+  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  background: var(--white); padding: 24px;
+}
+.auth-card {
+  width: 100%; max-width: 380px;
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 40px 32px 32px;
+}
+.auth-title { font-size: 20px; font-weight: 600; color: var(--carbon); text-align: center; }
+.auth-sub { font-size: 13px; color: var(--pewter); text-align: center; margin: 6px 0 32px; }
+.field { margin-bottom: 20px; }
+.field label { display: block; font-size: 12px; font-weight: 600; color: var(--pewter); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+.error-msg { background: #FEF2F2; color: #DC2626; padding: 10px 14px; border-radius: var(--radius); font-size: 13px; margin-top: 8px; }
+.switch-link { text-align: center; margin-top: 24px; font-size: 13px; color: var(--pewter); }
+.switch-link a { color: var(--blue); font-weight: 500; }
+.spinner { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,.3); border-top-color: #fff; border-radius: 50%; animation: spin .6s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
 </style>

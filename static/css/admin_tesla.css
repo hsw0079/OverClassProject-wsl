@@ -1,0 +1,179 @@
+/* ===== Tesla Admin Overrides ===== */
+:root {
+  --blue: #3E6AE1;
+  --carbon: #171A20;
+  --graphite: #393C41;
+  --pewter: #5C5E62;
+  --silver: #8E8E8E;
+  --ash: #F4F4F4;
+  --white: #FFFFFF;
+  --border: #E5E7EB;
+  --radius: 4px;
+  --transition: all 0.33s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+/* ---- Header ---- */
+#header {
+  background: var(--white) !important;
+  color: var(--carbon) !important;
+  border-bottom: 1px solid var(--border) !important;
+  box-shadow: none !important;
+  height: 52px; padding: 0 20px;
+}
+#branding h1 { color: var(--carbon) !important; font-weight: 600; font-size: 16px; }
+#user-tools { font-size: 13px; }
+#user-tools a { color: var(--graphite) !important; border-bottom: none !important; }
+#user-tools a:hover { color: var(--blue) !important; }
+
+/* ---- Breadcrumbs ---- */
+div.breadcrumbs {
+  background: var(--ash) !important;
+  color: var(--pewter) !important;
+  padding: 8px 20px !important;
+  font-size: 13px;
+  box-shadow: none !important;
+  border-bottom: 1px solid var(--border);
+}
+div.breadcrumbs a { color: var(--blue) !important; }
+
+/* ---- Content ---- */
+#content { padding: 20px !important; background: var(--white) !important; }
+#content h1 { color: var(--carbon); font-size: 20px; font-weight: 600; margin-bottom: 16px; }
+
+/* ---- Module / Table ---- */
+.module {
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius) !important;
+  box-shadow: none !important;
+  margin-bottom: 16px !important;
+}
+.module h2, .module caption {
+  background: var(--ash) !important;
+  color: var(--carbon) !important;
+  font-size: 13px; font-weight: 600;
+  padding: 10px 14px !important;
+  border-bottom: 1px solid var(--border);
+}
+.module table {
+  border: none !important;
+}
+.module table th {
+  background: var(--white) !important;
+  color: var(--pewter) !important;
+  font-size: 12px; font-weight: 600; text-transform: uppercase;
+  padding: 10px 14px !important;
+  border-bottom: 1px solid var(--border);
+}
+.module table td {
+  padding: 10px 14px !important;
+  border-bottom: 1px solid var(--ash);
+  font-size: 13px;
+}
+.module table tr:last-child td { border-bottom: none; }
+.module table tr:hover td { background: var(--ash) !important; }
+
+/* ---- Buttons ---- */
+.button, .button:link, .button:visited,
+input[type="submit"], input[type="button"],
+.submit-row input {
+  background: var(--blue) !important;
+  color: var(--white) !important;
+  border: none !important;
+  border-radius: var(--radius) !important;
+  padding: 8px 20px !important;
+  height: 36px;
+  font-size: 13px; font-weight: 500;
+  box-shadow: none !important;
+  transition: var(--transition) !important;
+}
+.button:hover, input[type="submit"]:hover { background: #3560C8 !important; }
+.button.default { background: var(--blue) !important; }
+
+a.addlink {
+  background: var(--blue) !important;
+  color: var(--white) !important;
+  padding: 7px 16px !important;
+  border-radius: var(--radius) !important;
+  font-weight: 500; font-size: 13px;
+  transition: var(--transition);
+}
+a.addlink:hover { background: #3560C8 !important; }
+
+/* ---- Object Tools ---- */
+.object-tools { margin-bottom: 12px !important; }
+.object-tools a, .object-tools a:link {
+  background: var(--white) !important;
+  color: var(--blue) !important;
+  border: 1px solid var(--blue) !important;
+  border-radius: var(--radius) !important;
+  padding: 6px 14px !important;
+  font-size: 13px; font-weight: 500;
+  box-shadow: none !important;
+  transition: var(--transition);
+}
+.object-tools a:hover { background: var(--blue) !important; color: var(--white) !important; }
+
+/* ---- Form ---- */
+.form-row {
+  border-bottom: 1px solid var(--ash) !important;
+  padding: 12px 14px !important;
+}
+.form-row label { color: var(--carbon); font-weight: 500; }
+input[type="text"], input[type="password"], input[type="email"],
+input[type="number"], input[type="url"], textarea, select {
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius) !important;
+  padding: 7px 10px !important;
+  font-size: 13px !important;
+  box-shadow: none !important;
+  transition: var(--transition);
+}
+input:focus, textarea:focus, select:focus {
+  border-color: var(--blue) !important;
+  outline: none;
+}
+
+/* ---- Changelist Filter ---- */
+#changelist-filter {
+  border-left: 1px solid var(--border) !important;
+  background: var(--white) !important;
+}
+#changelist-filter h2 {
+  background: var(--ash) !important;
+  font-size: 13px; font-weight: 600;
+  padding: 8px 12px !important;
+  margin: 0 !important;
+}
+#changelist-filter h3 { font-size: 12px; font-weight: 600; color: var(--pewter); }
+#changelist-filter a { color: var(--graphite) !important; }
+#changelist-filter .selected a { color: var(--blue) !important; font-weight: 600; }
+
+/* ---- Login Page ---- */
+.login #header { background: var(--white) !important; border: none !important; text-align: center; padding-top: 40px !important; }
+.login #content { padding-top: 12px !important; }
+.login .form-row { border: none !important; padding: 8px 0 !important; }
+.login .submit-row { padding: 16px 0 0 !important; border: none !important; background: none !important; }
+.login .submit-row input { width: 100% !important; height: 40px !important; }
+
+/* ---- Paginator ---- */
+.paginator {
+  border-top: 1px solid var(--border) !important;
+  padding: 10px 0 !important;
+  font-size: 13px;
+}
+.paginator a, .paginator .this-page {
+  padding: 4px 10px !important;
+  border-radius: var(--radius);
+}
+.paginator .this-page { background: var(--blue); color: var(--white); }
+
+/* ---- Messages ---- */
+.messagelist li {
+  border-radius: var(--radius) !important;
+  box-shadow: none !important;
+}
+
+/* ---- Dark Mode Cleanup ---- */
+@media (prefers-color-scheme: dark) {
+  :root { color-scheme: light only; }
+}

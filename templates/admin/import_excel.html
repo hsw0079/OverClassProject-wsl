@@ -1,40 +1,43 @@
-﻿{% extends "admin/base_site.html" %}
+{% extends "admin/base_site.html" %}
 {% load static %}
 
 {% block extrastyle %}
-<link rel="stylesheet" href="{% static 'css/admin_custom.css' %}">
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'css/admin_tesla.css' %}">
+<style>
+  .import-container { max-width: 640px; }
+  .info-box { background: var(--ash); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 20px; font-size: 13px; color: var(--graphite); line-height: 1.8; }
+  .info-box strong { color: var(--carbon); }
+  .form-label { display: block; font-size: 12px; font-weight: 600; color: var(--pewter); margin-bottom: 6px; text-transform: uppercase; }
+</style>
 {% endblock %}
 
 {% block title %}批量导入在校车辆{% endblock %}
 
 {% block content %}
-<h2 class="page-title">📥 批量导入在校车辆</h2>
+<h1 style="font-size:20px;font-weight:600;color:var(--carbon);margin-bottom:20px">批量导入在校车辆</h1>
 
 <div class="import-container">
-
   <div class="info-box">
-    <strong>📋 Excel 格式要求</strong><br>
-    第 1 行为表头（会被跳过），从第 2 行开始为数据。列顺序如下：<br><br>
-    <code>A: 车牌号（必填） | B: 车辆类型 | C: 品牌 | D: 颜色 | E: 所属人/部门（必填） | F: 联系电话</code>
-    <br><br>
-    车辆类型支持：校车 / 教职工 / 公务 / 访客 / 送货（未填默认"教职工车辆"）
-    <br>已存在的车牌号会自动跳过，不会重复导入。
+    <strong>Excel 格式要求</strong><br>
+    第 1 行为表头（跳过），第 2 行起数据。列顺序：<br>
+    <code>A: 车牌号（必填） | B: 车辆类型 | C: 品牌 | D: 颜色 | E: 所属人/部门（必填） | F: 联系电话</code><br><br>
+    车辆类型：校车 / 教职工 / 公务 / 访客 / 送货（默认"教职工车辆"）<br>
+    已存在车牌号自动跳过。
   </div>
 
-  <form method="post" enctype="multipart/form-data" style="margin-bottom: 16px;">
+  <form method="post" enctype="multipart/form-data" style="margin-bottom:16px">
     {% csrf_token %}
-    <div style="margin-bottom: 16px;">
+    <div style="margin-bottom:16px">
       <label class="form-label">选择 Excel 文件（.xlsx）</label>
-      <input type="file" name="excel_file" accept=".xlsx" required class="form-input-file">
+      <input type="file" name="excel_file" accept=".xlsx" required style="display:block;font-size:13px">
     </div>
-    <button type="submit" class="btn-primary">🚀 开始导入</button>
-    <a href="../schoolvehicle/" class="btn-outline">← 返回列表</a>
+    <button type="submit" class="btn-primary" style="height:36px;padding:0 20px">开始导入</button>
+    <a href="../schoolvehicle/" class="btn-secondary" style="display:inline-flex;height:36px;padding:0 20px;text-decoration:none">← 返回列表</a>
   </form>
 
-  <div style="border-top: 1px solid #ebeef5; padding-top: 16px;">
-    <a href="../download-template/" style="color: var(--color-primary); text-decoration: none; font-size: 13px;">
-       下载 Excel 模板
-    </a>
+  <div style="border-top:1px solid var(--border);padding-top:16px">
+    <a href="../download-template/" style="color:var(--blue);font-size:13px;text-decoration:none">下载 Excel 模板</a>
   </div>
 </div>
 {% endblock %}

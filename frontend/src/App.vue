@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div id="app-root">
     <router-view />
   </div>
@@ -8,8 +8,5 @@
 </script>
 
 <style>
-#app-root {
-  min-height: 100vh;
-  background: #f5f7fa;
-}
+#app-root { min-height: 100vh; background: #fff; }
 </style>
