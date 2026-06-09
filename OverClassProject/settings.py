@@ -1,4 +1,4 @@
-﻿"""
+"""
 Django settings for OverClassProject project.
 """
 from pathlib import Path
@@ -31,7 +31,7 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',  # 开发阶段禁用，前端 SPA 跨域请求
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -100,8 +100,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
-    ],
+        ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticatedOrReadOnly',
     ],
@@ -110,8 +109,7 @@ REST_FRAMEWORK = {
 }
 
 # ---- CORS ----
-CORS_ALLOW_ALL_ORIGINS = True  # 开发环境；生产应限制
-CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_ALL_ORIGINS = True  # 开发环境；生产应限制CORS_ALLOW_CREDENTIALS = True
 
 # ---- Admin customization ----
 ADMIN_HOME_REDIRECT = '/admin/stats/'

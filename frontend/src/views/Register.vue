@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="auth-page">
     <div class="auth-card">
       <h1>注册账号</h1>
@@ -38,6 +38,7 @@ const error = ref('')
 const loading = ref(false)
 
 async function handleRegister() {
+  console.log('[Register] button clicked')
   error.value = ''
   if (password.value !== password2.value) {
     error.value = '两次密码不一致'
@@ -45,8 +46,8 @@ async function handleRegister() {
   }
   loading.value = true
   try {
-    await auth.register(username.value, password.value)
-    router.push('/')
+    console.log('[Register] username:', username.value); await auth.register(username.value, password.value)
+    console.log('[Register] success, redirecting'); router.push('/')
   } catch (e) {
     const data = e.response?.data
     error.value = typeof data === 'string' ? data : (data?.username?.[0] || data?.password?.[0] || '注册失败')

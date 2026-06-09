@@ -1,4 +1,4 @@
-﻿from django.contrib import admin
+from django.contrib import admin
 from django.urls import path, re_path, include
 from django.views.static import serve
 from django.shortcuts import redirect
@@ -8,6 +8,7 @@ from apps.vehicle_mgmt.api_views import RegisterView, appointment_qr, qr_token_i
 from rest_framework.routers import DefaultRouter
 from apps.vehicle_mgmt.api_views import AppointmentViewSet
 from rest_framework.authtoken.views import obtain_auth_token
+from apps.vehicle_mgmt.api_views import csrf_exempt_login
 
 # DRF Router
 router = DefaultRouter()
@@ -19,7 +20,7 @@ urlpatterns = [
 
     # ---- API ----
     path('api/auth/register/', RegisterView.as_view(), name='api_register'),
-    path('api/auth/login/', obtain_auth_token, name='api_login'),
+    path('api/auth/login/', csrf_exempt_login, name='api_login'),
     path('api/auth/user/', user_info, name='api_user_info'),
     path('api/appointments/<int:pk>/qr/', appointment_qr, name='api_appointment_qr'),
     path('api/appointments/<int:pk>/qr-info/', qr_token_info, name='api_qr_info'),
