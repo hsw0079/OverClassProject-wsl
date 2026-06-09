@@ -188,3 +188,7 @@ input:focus, textarea:focus, select:focus {
 @media (prefers-color-scheme: dark) {
   :root { color-scheme: light only; }
 }
+
+a.section:link, a.section:visited {
+  color: var(--carbon) !important;
+}
