@@ -1,0 +1,32 @@
+﻿# === Python ===
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+dist/
+build/
+
+# === Virtual Environment ===
+.venv/
+venv/
+env/
+
+# === Django ===
+staticfiles/
+uploads/
+*.log
+db.sqlite3
+local_settings.py
+
+# === PyCharm ===
+.idea/
+
+# === Vue / Node ===
+frontend/node_modules/
+frontend/dist/
+
+# === OS ===
+.DS_Store
+Thumbs.db
+*.swp
+*.swo

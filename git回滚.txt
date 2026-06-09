@@ -26,7 +26,17 @@ git reset --hard 版本号
 本地文件 直接变回那个版本
 丢弃当前所有未提交的修改
 最干净、最彻底
+bfd5e9e5ce9f010b6ebf327dce666513645f9920
 
+git clean -fd
+
+git clean -fdx
+
+git checkout -- .
+git clean -fdx
+git checkout 31c269a5443af1a2caed7a645a2cb70e5722e242
+
+dffefa3
 
 2. 温和回滚（不删代码，只撤销提交）
 bash
