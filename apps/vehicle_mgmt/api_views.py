@@ -87,8 +87,10 @@ def qr_token_info(request, pk):
         return Response({"error": "\u9884\u7ea6\u4e0d\u5b58\u5728"}, status=404)
 
     qr_token = QRPassToken.objects.filter(appointment=appt).first()
-    if not qr_token:
-        return Response({"error": "\u6682\u65e0\u901a\u884c\u8bc1"}, status=404)
+    if not qr_token or not qr_token.is_valid():
+        if qr_token:
+            qr_token.delete()
+        qr_token = QRPassToken.generate_for_appointment(appt)
 
     return Response({
         "token": qr_token.token,
