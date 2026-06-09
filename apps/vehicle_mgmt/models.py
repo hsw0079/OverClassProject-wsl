@@ -131,6 +131,7 @@ class VisitorAppointment(models.Model):
         ('left', '已离开'),
     ]
 
+    user = models.ForeignKey('auth.User', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='关联用户', related_name='appointments')
     visitor_name = models.CharField('访客姓名', max_length=50)
     visitor_phone = models.CharField('访客电话', max_length=20)
     plate_number = models.CharField('车牌号', max_length=20)
@@ -184,3 +185,41 @@ class NonMotorVehicle(models.Model):
         super().clean()
         if not re.match(r'^(00[1-9]|0[1-9][0-9]|[1-9][0-9]{2})$', self.number_plate):
             raise ValidationError({'number_plate': '编号牌必须为 001~999 的3位数字（如 001、050、999）'})
+
+import hashlib
+import secrets
+from datetime import timedelta
+
+class QRPassToken(models.Model):
+    """QR 通行令牌"""
+    appointment = models.OneToOneField(
+        VisitorAppointment, on_delete=models.CASCADE,
+        verbose_name='关联预约', related_name='qr_token'
+    )
+    token = models.CharField('令牌', max_length=64, unique=True)
+    expires_at = models.DateTimeField('有效期至')
+    used_at = models.DateTimeField('核销时间', null=True, blank=True)
+    created_at = models.DateTimeField('创建时间', auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'QR 通行令牌'
+        verbose_name_plural = verbose_name
+
+    def __str__(self):
+        return f'{self.appointment.visitor_name} - {self.token[:12]}...'
+
+    def is_valid(self):
+        from django.utils.timezone import now
+        return self.used_at is None and self.expires_at > now()
+
+    @classmethod
+    def generate_for_appointment(cls, appointment):
+        """为已通过的预约生成令牌（有效期 24h）"""
+        from django.utils.timezone import now
+        token_str = secrets.token_hex(32)
+        expires = now() + timedelta(hours=24)
+        return cls.objects.create(
+            appointment=appointment,
+            token=token_str,
+            expires_at=expires
+        )

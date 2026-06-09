@@ -13,18 +13,22 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
-    'simpleui',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'corsheaders',
+    'rest_framework.authtoken',
+    'apps.campus_nav.apps.CampusNavConfig',
     'apps.vehicle_mgmt.apps.VehicleMgmtConfig',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -34,13 +38,6 @@ MIDDLEWARE = [
     'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
-SIMPLEUI_HOME_ACTION = False
-SIMPLEUI_HOME_QUICK = False
-SIMPLEUI_TABS = True
-SIMPLEUI_DEFAULT_COLLAPSED = False
-SIMPLEUI_DEFAULT_THEME = 'Simpleui-x.css'
-SIMPLEUI_HOME_INFO = False
-SIMPLEUI_HOME_PAGE = '/admin/stats/'
 
 # In dev, use simpler storage or run collectstatic first
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
@@ -98,3 +95,23 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# ---- Django REST Framework ----
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 20,
+}
+
+# ---- CORS ----
+CORS_ALLOW_ALL_ORIGINS = True  # 开发环境；生产应限制
+CORS_ALLOW_CREDENTIALS = True
+
+# ---- Admin customization ----
+ADMIN_HOME_REDIRECT = '/admin/stats/'

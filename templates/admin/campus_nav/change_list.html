@@ -1,0 +1,17 @@
+﻿{% extends "admin/change_list.html" %}
+{% load static %}
+
+{% block extrahead %}
+{{ block.super }}
+<script>
+  window._AMAP_KEY = '5e9cf78fff673e4b098e24a530926e78';
+  window._AMAP_SECRET = '94b2fc14e7649625b0bb2ae9950eaa30';
+</script>
+<script src="https://webapi.amap.com/maps?v=2.0&key=5e9cf78fff673e4b098e24a530926e78&plugin=AMap.Geolocation,AMap.Scale"></script>
+<script src="{% static 'admin/js/campus_map_loader.js' %}"></script>
+{% endblock %}
+
+{% block object-tools-items %}
+  <li><a href="#" onclick="openCampusMap(); return false;" style="background:#409eff;color:#fff;padding:7px 16px;border-radius:4px;">📍 添加校内地点</a></li>
+  {{ block.super }}
+{% endblock %}
