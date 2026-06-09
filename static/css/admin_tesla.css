@@ -10,6 +10,7 @@
   --border: #E5E7EB;
   --radius: 4px;
   --transition: all 0.33s cubic-bezier(0.25, 0.1, 0.25, 1);
+  /*--selected-row: #b3c5ed;   !* 浅蓝，匹配 Tesla 主题 *!*/
 }
 
 /* ---- Header ---- */
@@ -34,7 +35,8 @@ div.breadcrumbs {
   box-shadow: none !important;
   border-bottom: 1px solid var(--border);
 }
-div.breadcrumbs a { color: var(--blue) !important; }
+div.breadcrumbs a { color: #5070c2 !important; }
+/*change*/
 
 /* ---- Content ---- */
 #content { padding: 20px !important; background: var(--white) !important; }
@@ -182,6 +184,12 @@ input:focus, textarea:focus, select:focus {
   box-shadow: none !important;
 }
 
+/*change*/
+html[data-theme="light"],
+:root {
+  --selected-row: #f0f4ff;
+}
+
 
 
 /* ---- Dark Mode Cleanup ---- */
@@ -190,5 +198,5 @@ input:focus, textarea:focus, select:focus {
 }
 
 a.section:link, a.section:visited {
-  color: var(--carbon) !important;
+  color: #001d59 !important;
 }
