@@ -1,3 +1,51 @@
+git checkout -- apps/vehicle_mgmt/__pycache__/admin.cpython-313.pyc
+git stash
+git checkout 31c269a5443af1a2caed7a645a2cb70e5722e242
+
+git checkout main
+git checkout -- . && git checkout main
+taskkill /f /im esbuild.exe  2>nul
+git checkout main
+git stash pop
+
+
+安全回滚操作指南
+一句话原则
+永远不用 git clean -fdx，用 git stash 代替。
+
+查看历史
+git reflog                        # 查看所有操作记录（含已删除的提交）
+git log --oneline                 # 当前分支提交历史
+git reflog 是后悔药——即使 reset 过头也能找回。
+
+回滚到旧版本（只读查看，不改文件）
+git checkout <commit-hash>
+看完后回来：
+
+git checkout main
+如果想在旧版本上临时改东西
+git stash                         # 先保存当前工作
+git checkout <commit-hash>        # 切到旧版本
+# ... 查看或修改 ...
+git checkout main                 # 回来
+git stash pop                     # 恢复之前的工作
+如果要丢弃当前修改、回到干净状态
+# ✅ 安全：只丢弃 tracked 文件的修改
+git checkout -- .
+
+# ✅ 安全：丢弃 tracked + staged 的修改
+git reset --hard HEAD
+
+# ❌ 危险：连 .venv、node_modules 等未跟踪文件一起删
+git clean -fdx
+如果已经 git clean -fdx 搞丢了 venv
+python -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt   # 前提：已生成过 requirements.txt
+
+---------------------------------弃用---------------------------------------
+
+
 回滚到上上版、覆盖本地当前代码
 git reset --hard HEAD^^
 
@@ -33,10 +81,28 @@ git clean -fd
 git clean -fdx
 
 git checkout -- .
-git clean -fdx
+//git clean -fdx
+git clean -fdx   # 会删除虚拟环境！
 git checkout 31c269a5443af1a2caed7a645a2cb70e5722e242
 
 dffefa3
+
+下次回滚安全步骤
+# 1. 先暂存当前工作（比 clean 安全）
+git stash
+
+# 2. 回滚到目标版本
+git checkout <commit-hash>
+
+# 3. 如果回滚后的版本用了不同依赖，只重建 venv，不 clean 全项目
+python -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt    # 前提：已经有了 requirements.txt
+
+# 4. 回到最新
+git checkout main
+git stash pop                       # 恢复工作
+核心原则：永远不要 git clean -fdx，用 git stash 代替。如果一定要 clean，先用 git clean -fdxn（dry-run）预览会删什么。
 
 2. 温和回滚（不删代码，只撤销提交）
 bash
