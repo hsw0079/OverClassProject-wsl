@@ -1,4 +1,4 @@
-﻿import csv
+import csv
 
 from django.contrib import admin
 from django.http import HttpResponse
@@ -137,13 +137,13 @@ class EntryExitRecordAdmin(admin.ModelAdmin):
 class VisitorAppointmentAdmin(admin.ModelAdmin):
     list_display = ('visitor_name', 'visitor_phone', 'plate_number',
                     'host_name', 'host_department', 'expected_time',
-                    'status_display', 'approver', 'created_at')
+                    'status_display', 'approver', 'approval_message', 'created_at')
     list_filter = ('status', 'expected_time', 'host_department')
     search_fields = ('visitor_name', 'visitor_phone', 'plate_number',
                      'host_name', 'host_department', 'purpose')
     list_per_page = 20
     ordering = ('-created_at',)
-    actions = [export_as_csv]
+    actions = [export_as_csv, 'approve_appointments', 'reject_appointments']
 
     fieldsets = (
         ('访客信息', {'fields': ('visitor_name', 'visitor_phone', 'plate_number')}),
@@ -151,6 +151,22 @@ class VisitorAppointmentAdmin(admin.ModelAdmin):
         ('预约信息', {'fields': ('expected_time', 'purpose', 'status', 'approver')}),
         ('其他', {'fields': ('remarks',)}),
     )
+
+    def approve_appointments(self, request, queryset):
+        updated = queryset.filter(status='pending').update(
+            status='approved',
+            approver=request.user.username
+        )
+        self.message_user(request, '已审批通过 {} 条预约。'.format(updated))
+    approve_appointments.short_description = '✅ 审批通过'
+
+    def reject_appointments(self, request, queryset):
+        updated = queryset.filter(status='pending').update(
+            status='rejected',
+            approver=request.user.username
+        )
+        self.message_user(request, '已拒绝 {} 条预约。'.format(updated))
+    reject_appointments.short_description = '❌ 拒绝'
 
     def status_display(self, obj):
         status_colors = {
@@ -163,6 +179,14 @@ class VisitorAppointmentAdmin(admin.ModelAdmin):
         return status_colors.get(obj.status, obj.status)
     status_display.short_description = '状态'
     status_display.admin_order_field = 'status'
+
+    def approval_message(self, obj):
+        if obj.status == 'approved':
+            return '✅ {} 已通过'.format(obj.approver or '管理员')
+        elif obj.status == 'rejected':
+            return '❌ {} 已拒绝'.format(obj.approver or '管理员')
+        return '—'
+    approval_message.short_description = '审批消息'
 
 
 
