@@ -10,7 +10,7 @@
     <main class="main-grid">
       <!-- 预约申请 -->
       <section class="panel">
-        <div class="panel-header">📝 预约申请</div>
+        <div class="panel-header"> 预约申请</div>
         <div class="panel-body">
           <form @submit.prevent="submitAppointment">
             <div class="field"><label>访客姓名 *</label><input v-model="form.visitor_name" class="input-line" placeholder="请输入姓名" required /></div>
@@ -30,7 +30,7 @@
       </section>
       <!-- 申请状态 -->
       <section class="panel">
-        <div class="panel-header">📋 申请状态<span v-if="appointments.length" class="count">{{ appointments.length }}</span></div>
+        <div class="panel-header"> 申请状态<span v-if="appointments.length" class="count">{{ appointments.length }}</span></div>
         <div class="panel-body scrollable">
           <div v-if="appointments.length === 0" class="empty">暂无预约记录</div>
           <div v-for="apt in appointments" :key="apt.id" class="apt-item">
@@ -44,7 +44,7 @@
       </section>
       <!-- 校内导航 -->
       <section class="panel">
-        <div class="panel-header">📍 校内导航</div>
+        <div class="panel-header"> 校内导航</div>
         <div class="panel-body scrollable">
           <div v-if="locations.length === 0" class="empty">暂无导航地点</div>
           <div v-for="loc in locations" :key="loc.id" class="nav-item" @click="$router.push('/nav/' + loc.id)">

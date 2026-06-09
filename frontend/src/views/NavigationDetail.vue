@@ -35,13 +35,13 @@
       </div>
       <button
         v-if="!navigating"
-        class="btn-nav"
+        class="btn-primary"
         @click="startNavigation"
         :disabled="!routeReady"
       >
         ▶ 开始导航
       </button>
-      <button v-else class="btn-primary" style="height:36px;padding:0 24px;font-size:14px;background:#DC2626" @click="stopNavigation">
+      <button v-else class="btn-primary btn-stop" @click="stopNavigation">
         ⏹ 结束导航
       </button>
     </div>
@@ -524,4 +524,9 @@ function stepIcon(instruction) {
   cursor: pointer;
   font-size: 14px;
 }
+
+
+/* ---- end nav btn ---- */
+.btn-stop { background: #DC2626; }
+.btn-stop:hover { background: #B91C1C; }
 </style>
