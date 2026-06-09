@@ -115,7 +115,13 @@ onMounted(async () => {
 
 onUnmounted(() => {
   stopNavigation()
-  if (map) map.destroy()
+  try {
+    if (map && document.getElementById('amap-container')) {
+      map.destroy()
+    }
+  } catch (e) {
+    console.error('[NavDetail] map.destroy error:', e)
+  }
   map = null
 })
 
@@ -249,10 +255,10 @@ function startNavigation() {
 function stopNavigation() {
   navigating.value = false
   if (geoWatcher) {
-    window.AMap.event.removeListener(geoWatcher, 'complete', onPositionUpdate)
+    try { window.AMap.event.removeListener(geoWatcher, 'complete', onPositionUpdate) } catch (e) { console.error('[NavDetail] removeListener error:', e) }
     geoWatcher = null
   }
-  window.speechSynthesis?.cancel()
+  try { window.speechSynthesis?.cancel() } catch (e) { console.error('[NavDetail] speech cancel error:', e) }
 }
 
 function onPositionUpdate(result) {

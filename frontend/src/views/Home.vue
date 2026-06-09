@@ -70,11 +70,11 @@ const submitting = ref(false), submitMsg = ref(''), submitOk = ref(true)
 const appointments = ref([]), locations = ref([])
 
 onMounted(async () => {
-  try { const { data } = await api.get('/auth/user/'); user.value = data } catch {}
+  try { const { data } = await api.get('/auth/user/'); user.value = data } catch (e) { console.error('[Home] fetch user failed:', e) }
   fetchAppointments(); fetchLocations()
 })
-async function fetchAppointments() { try { const { data } = await api.get('/appointments/'); appointments.value = data.results || data || [] } catch { appointments.value = [] } }
-async function fetchLocations() { try { const { data } = await api.get('/admin/locations/'); locations.value = data.results || data || [] } catch { locations.value = [] } }
+async function fetchAppointments() { try { const { data } = await api.get('/appointments/'); appointments.value = data.results || data || [] } catch (e) { console.error('[Home] fetch appointments failed:', e); appointments.value = [] } }
+async function fetchLocations() { try { const { data } = await api.get('/admin/locations/'); locations.value = data.results || data || [] } catch (e) { console.error('[Home] fetch locations failed:', e); locations.value = [] } }
 async function submitAppointment() {
   submitMsg.value = ''; submitting.value = true
   try {
