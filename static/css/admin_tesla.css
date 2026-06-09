@@ -192,6 +192,14 @@ html[data-theme="light"],
 
 
 
+/* ---- Hide Theme Toggle ---- */
+.theme-toggle {
+  display: none !important;
+}
+
+/*hide Theme Toggle*/
+
+
 /* ---- Dark Mode Cleanup ---- */
 @media (prefers-color-scheme: dark) {
   :root { color-scheme: light only; }
