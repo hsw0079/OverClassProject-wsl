@@ -1,0 +1,15 @@
+前端
+cd ~/projects/OverClassProject/
+ cd frontend
+npm run dev
+
+后端
+~/projects/OverClassProject$ source .venv/bin/activate
+python manage.py runserver 8001
+
+杀死占用端口
+ss -ltnp | grep :8001
+
+LISTEN ... 127.0.0.1:8001 ... users:(("python",pid=12345,...))
+
+kill 12345

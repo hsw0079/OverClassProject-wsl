@@ -6,8 +6,8 @@
 2. **安全密钥**（JS API 安全密钥）
 
 然后在以下文件中替换：
-- `frontend/src/views/NavigationDetail.vue` 中的 `AMAP_KEY` 和 `AMAP_SECRET`
-- `static/admin/js/campus_map_admin.js` 中的高德 Key（通过 Admin Media 引入时配置）
+- `frontend/src/views/NavigationDetail.vue` 中的 `AMAP_KEY` 和 `AMAP_SECRET`（SPA 导航）
+- `templates/admin/campus_nav/change_list.html` 中 `<script src="...maps?v=2.0&key=...">` 的高德 Key（Admin 地点选择器）
 
 ## 校园地图图片
 

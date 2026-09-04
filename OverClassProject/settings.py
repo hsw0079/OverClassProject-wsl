@@ -1,4 +1,4 @@
-"""
+﻿"""
 Django settings for OverClassProject project.
 """
 from pathlib import Path
@@ -53,8 +53,7 @@ TEMPLATES = [
             'context_processors': [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-            ],
+                'django.contrib.messages.context_processors.messages',            ],
         },
     },
 ]
